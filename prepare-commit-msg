@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# If commit message does not refer to any JIRA issue number,
+# this hook will parse the JIRA issue from the current branch and 
+# prepend it to the commit message
+# 
+# Example:
+# Branch: CW-645 or CW-645-some-text
+# commit message: Updated README.md 
+# prepended commit message: #CW-645 Updated README.md
+#
+# Install
+# Copy this file into your projects .git/hooks/prepare-commit-msg file
+#
+
+parse_issue () {
+    local match
+    local re='\([[:alpha:]]\+-[[:digit:]]\+\).*'
+    match=$(echo $1 | sed -n "s/.*[^a-zA-Z]$re/\1/p")
+    [ -z "$match" ]  && match=$(echo $1 | sed -n "s/^$re/\1/p")
+    match=$(echo $match | tr [a-z] [A-Z])
+    echo $match
+}
+
+get_branch () {
+    echo $(git symbolic-ref --short HEAD)
+}
+
+
+source=$2
+commit_msg=$(cat $1)
+branch=$(get_branch)
+commit_issue=$(parse_issue "$commit_msg")
+branch_issue=$(parse_issue "$branch")
+
+if [ "$source" = "message" -a -n "$branch_issue" -a "$branch_issue" != "$commit_issue" ] 
+then
+    new_commit_msg="#$branch_issue $commit_msg"
+    echo $new_commit_msg > $1
+fi
+
