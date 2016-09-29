@@ -18,8 +18,20 @@ prepend it to the commit message
 Copy this file into your projects .git/hooks/prepare-commit-msg file
 
 ```bash
-wget -O ./.git/hooks/prepare-commit-msg https://raw.githubusercontent.com/hassansin/prepare-commit-msg/master/prepare-commit-msg
+wget -q -O ./.git/hooks/prepare-commit-msg https://raw.githubusercontent.com/hassansin/prepare-commit-msg/master/prepare-commit-msg
 chmod +x ./.git/hooks/prepare-commit-msg
+```
+
+For submodules:
+
+```bash
+
+for module in .git/modules/*; do
+    wget -q -O "${module}/hooks/prepare-commit-msg" https://raw.githubusercontent.com/hassansin/prepare-commit-msg/master/prepare-commit-msg
+    chmod +x "${module}/hooks/prepare-commit-msg"
+done
+
+
 ```
 
 ## Test
