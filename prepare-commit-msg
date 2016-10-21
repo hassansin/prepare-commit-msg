@@ -35,7 +35,7 @@ branch_issue=$(parse_issue "$branch")
 
 if [ "$source" = "message" -a -n "$branch_issue" -a "$branch_issue" != "$commit_issue" ] 
 then
-    new_commit_msg="#$branch_issue $commit_msg"
+    new_commit_msg="$branch_issue: $commit_msg"
     echo $new_commit_msg > $1
 fi
 
