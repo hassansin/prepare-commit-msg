@@ -26,9 +26,13 @@ get_branch () {
     echo $(git symbolic-ref --short HEAD)
 }
 
+to_upper(){
+    echo $( echo $1 | sed -e "s/\(^.\)/\u\1/g")
+}
+
 
 source=$2
-commit_msg=$(cat $1)
+commit_msg=$(to_upper "$(cat $1)")
 branch=$(get_branch)
 commit_issue=$(parse_issue "$commit_msg")
 branch_issue=$(parse_issue "$branch")
@@ -37,5 +41,7 @@ if [ "$source" = "message" -a -n "$branch_issue" -a "$branch_issue" != "$commit_
 then
     new_commit_msg="$branch_issue: $commit_msg"
     echo $new_commit_msg > $1
+else
+    echo $commit_msg > $1
 fi
 

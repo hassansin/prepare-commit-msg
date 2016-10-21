@@ -18,7 +18,7 @@ testNoIssueInBranch()
     echo 'commit message' > COMMIT_MSG
     echo 'master' > GIT_BRANCH
     ./prepare-commit-msg ./COMMIT_MSG "message"
-    assertEquals "$(cat ./COMMIT_MSG)" "commit message"
+    assertEquals "$(cat ./COMMIT_MSG)" "Commit message"
 }
 
 testCapitalCaseBranch()
@@ -26,7 +26,7 @@ testCapitalCaseBranch()
     echo 'commit message' > COMMIT_MSG
     echo 'CW-255' > GIT_BRANCH
     ./prepare-commit-msg ./COMMIT_MSG "message"
-    assertEquals "$(cat ./COMMIT_MSG)" "#CW-255 commit message"
+    assertEquals "$(cat ./COMMIT_MSG)" "CW-255: Commit message"
 }
 
 testLowerCaseBranch()
@@ -34,7 +34,7 @@ testLowerCaseBranch()
     echo 'commit message' > COMMIT_MSG
     echo 'cw-255' > GIT_BRANCH
     ./prepare-commit-msg ./COMMIT_MSG "message"
-    assertEquals "$(cat ./COMMIT_MSG)" "#CW-255 commit message"
+    assertEquals "$(cat ./COMMIT_MSG)" "CW-255: Commit message"
 }
 
 
@@ -43,7 +43,7 @@ testExtraTextAfterBranch()
     echo 'commit message' > COMMIT_MSG
     echo 'CW-255-some-text' > GIT_BRANCH
     ./prepare-commit-msg ./COMMIT_MSG "message"
-    assertEquals "$(cat ./COMMIT_MSG)" "#CW-255 commit message"
+    assertEquals "$(cat ./COMMIT_MSG)" "CW-255: Commit message"
 }
 
 testExtraTextBeforeBranch()
@@ -51,7 +51,7 @@ testExtraTextBeforeBranch()
     echo 'commit message' > COMMIT_MSG
     echo 'some-branch-cww-100' > GIT_BRANCH
     ./prepare-commit-msg ./COMMIT_MSG "message"
-    assertEquals "$(cat ./COMMIT_MSG)" "#CWW-100 commit message"
+    assertEquals "$(cat ./COMMIT_MSG)" "CWW-100: Commit message"
 }
 
 
@@ -60,7 +60,7 @@ testDifferentIssueInCommitAndBranch_1()
     echo 'some commit message BW-100' > COMMIT_MSG
     echo 'CW-100' > GIT_BRANCH
     ./prepare-commit-msg ./COMMIT_MSG "message"
-    assertEquals "$(cat ./COMMIT_MSG)" "#CW-100 some commit message BW-100"
+    assertEquals "$(cat ./COMMIT_MSG)" "CW-100: Some commit message BW-100"
 }
 
 testDifferentIssueInCommitAndBranch_2()
@@ -68,7 +68,7 @@ testDifferentIssueInCommitAndBranch_2()
     echo 'some commit message CWW-100 and more' > COMMIT_MSG
     echo 'CW-100' > GIT_BRANCH
     ./prepare-commit-msg ./COMMIT_MSG "message"
-    assertEquals "$(cat ./COMMIT_MSG)" "#CW-100 some commit message CWW-100 and more"
+    assertEquals "$(cat ./COMMIT_MSG)" "CW-100: Some commit message CWW-100 and more"
 }
 
 testSameIssueInCommitAndBranch_1()
@@ -76,7 +76,7 @@ testSameIssueInCommitAndBranch_1()
     echo 'some commit message CW-100' > COMMIT_MSG
     echo 'CW-100' > GIT_BRANCH
     ./prepare-commit-msg ./COMMIT_MSG "message"
-    assertEquals "$(cat ./COMMIT_MSG)" "some commit message CW-100"
+    assertEquals "$(cat ./COMMIT_MSG)" "Some commit message CW-100"
 }
 
 testMultipleIssuesInCommit()
@@ -84,7 +84,7 @@ testMultipleIssuesInCommit()
     echo 'some commit message pw-1111,cw-100 and bw-200' > COMMIT_MSG
     echo 'CW-100-some-text' > GIT_BRANCH
     ./prepare-commit-msg ./COMMIT_MSG "message"
-    assertEquals "$(cat ./COMMIT_MSG)" "some commit message pw-1111,cw-100 and bw-200"
+    assertEquals "$(cat ./COMMIT_MSG)" "Some commit message pw-1111,cw-100 and bw-200"
 }
 
 # load shunit2
