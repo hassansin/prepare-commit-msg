@@ -16,32 +16,37 @@
 parse_issue () {
     local match
     local re='\([[:alpha:]]\+-[[:digit:]]\+\).*'
-    match=$(echo $1 | sed -n "s/.*[^a-zA-Z]$re/\1/p")
-    [ -z "$match" ]  && match=$(echo $1 | sed -n "s/^$re/\1/p")
-    match=$(echo $match | tr [a-z] [A-Z])
-    echo $match
+    match=$(echo "$1" | sed -n "s/.*[^a-zA-Z]$re/\1/p")
+    [ -z "$match" ]  && match=$(echo "$1" | sed -n "s/^$re/\1/p")
+    match=$(echo "$match" | tr [a-z] [A-Z])
+    echo "$match"
 }
 
 get_branch () {
-    echo $(git symbolic-ref --short HEAD)
+    echo "$(git symbolic-ref --short HEAD)"
 }
 
 to_upper(){
-    echo $( echo $1 | sed -e "s/\(^.\)/\u\1/g")
+    echo "$( echo "$1" | sed -e "s/\(^.\)/\u\1/g")"
 }
 
 
 source=$2
-commit_msg=$(to_upper "$(cat $1)")
-branch=$(get_branch)
-commit_issue=$(parse_issue "$commit_msg")
+commit_msg=$(to_upper "$(cat $1)") #uppercase first character
+branch="$(get_branch)"
+commit_issue=$(parse_issue "$(echo "$commit_msg" | grep "^[^#;]" )" ) #ignore comment lines when parsing issue
 branch_issue=$(parse_issue "$branch")
 
+# when source is cli message
 if [ "$source" = "message" -a -n "$branch_issue" -a "$branch_issue" != "$commit_issue" ] 
 then
     new_commit_msg="$branch_issue: $commit_msg"
-    echo $new_commit_msg > $1
+    echo "$new_commit_msg" > $1
+#when source is empty and editor will be brought up
+elif [ -z "$source" -a "$GIT_EDITOR" != ":" -a -n "$branch_issue" -a "$branch_issue" != "$commit_issue" ] 
+then
+    echo "$branch_issue: $commit_msg" > $1
 else
-    echo $commit_msg > $1
+    echo "$commit_msg" > $1
 fi
 

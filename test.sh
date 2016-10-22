@@ -54,6 +54,13 @@ testExtraTextBeforeBranch()
     assertEquals "$(cat ./COMMIT_MSG)" "CWW-100: Commit message"
 }
 
+testIssueInMiddleOfBranch()
+{
+    echo 'commit message' > COMMIT_MSG
+    echo 'before-text-cww-100-after-text' > GIT_BRANCH
+    ./prepare-commit-msg ./COMMIT_MSG "message"
+    assertEquals "$(cat ./COMMIT_MSG)" "CWW-100: Commit message"
+}
 
 testDifferentIssueInCommitAndBranch_1()
 {
@@ -87,5 +94,28 @@ testMultipleIssuesInCommit()
     assertEquals "$(cat ./COMMIT_MSG)" "Some commit message pw-1111,cw-100 and bw-200"
 }
 
+testIgnoreCommentMessage()
+{
+    echo "commit message\n# some comment\n; more comment" > COMMIT_MSG
+    echo 'CW-255' > GIT_BRANCH
+    ./prepare-commit-msg ./COMMIT_MSG "message"
+   
+    a="$(cat ./COMMIT_MSG)"  
+    b="CW-255: Commit message\n# some comment\n; more comment"
+
+    assertEquals $(echo "$b" | base64) $(echo "$a" | base64)
+}
+
+testEmptySource()
+{
+    echo "\n# some comment\n; more comment" > COMMIT_MSG
+    echo 'CW-255' > GIT_BRANCH
+    ./prepare-commit-msg ./COMMIT_MSG 
+
+    a="$(cat ./COMMIT_MSG)"  
+    b="CW-255: \n# some comment\n; more comment"
+
+    assertEquals $(echo "$b" | base64) $(echo "$a" | base64)
+}
 # load shunit2
 . ./shunit2
